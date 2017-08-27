@@ -38,9 +38,7 @@ void A4_Render(
     e = glm::inverse( root->trans ) * e;
     glm::vec3 l_eye( e.x, e.y, e.z );
     
-    // Fill in raytracing code here...
     glm::vec3 v_for = glm::normalize( view );
-    //glm::vec3 v_for(0, 0, 1);
     glm::vec3 v_right = glm::normalize( glm::cross( v_for, up ) );
     glm::vec3 v_up = glm::cross( v_right, v_for ); // Already normalized
 
@@ -56,7 +54,7 @@ void A4_Render(
     {
         for( float j = 0; j < image.width(); j++ )
         {
-             // dir = f + (h * y) * up + (w * x) * right
+            // Get direction vector
             glm::vec3 dir = v_for + h * ( ( ( 2 * i) / image.height() ) - 1 ) * v_up + w * ( ( ( 2 * j ) / image.width() ) - 1 ) * v_right;
             dir = glm::normalize( dir );
             State pixel_state = background;
@@ -181,36 +179,5 @@ void A4_Render(
         cout << int(i / image.height() * 100) << "%" << std::flush;
     }
     cout << endl;
-
-    //std::cout << "Calling A4_Render(\n" <<
-	//	  "\t" << *root <<
-    //      "\t" << "Image(width:" << image.width() << ", height:" << image.height() << ")\n"
-    //      "\t" << "eye:  " << glm::to_string(eye) << std::endl <<
-	//	  "\t" << "view: " << glm::to_string(view) << std::endl <<
-	//	  "\t" << "up:   " << glm::to_string(up) << std::endl <<
-	//	  "\t" << "fovy: " << fovy << std::endl <<
-    //      "\t" << "ambient: " << glm::to_string(ambient) << std::endl <<
-	//	  "\t" << "lights{" << std::endl;
-
-	//for(const Light * light : lights) {
-	//	std::cout << "\t\t" <<  *light << std::endl;
-	//}
-	//std::cout << "\t}" << std::endl;
-	//std:: cout <<")" << std::endl;
-
-	//size_t height = image.height();
-	//size_t width = image.width();
-
-	//for (uint y = 0; y < height; ++y) {
-	//	for (uint x = 0; x < width; ++x) {
-	//		// Red: increasing from top to bottom
-	//		image(x, y, 0) = (double)y / height;
-	//		// Green: increasing from left to right
-	//		image(x, y, 1) = (double)x / width;
-	//		// Blue: in lower-left and upper-right corners
-	//		image(x, y, 2) = ((y < height/2 && x < width/2)
-	//					  || (y >= height/2 && x >= width/2)) ? 1.0 : 0.0;
-	//	}
-	//}
 
 }
