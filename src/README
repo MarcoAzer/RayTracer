@@ -1,9 +1,0 @@
-# Compilation:
-* No changes
-* ```premake4 gmake```
-* ```make```
-* ```./A4```
-
-* Sphere and boxes are working for nonhier
-* Tried implementing Mesh but not working and no time to debug it
-* Epsilon checks made my images worse so commented it out
