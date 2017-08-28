@@ -34,9 +34,9 @@ public:
   virtual bool epsilon_check( glm::vec3& p );
   virtual ~NonhierSphere();
 
+  double m_radius;
 private:
   glm::vec3 m_pos;
-  double m_radius;
 };
 
 class NonhierPlane {

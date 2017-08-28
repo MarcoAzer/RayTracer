@@ -45,35 +45,12 @@ Cube::~Cube()
 float
 NonhierSphere::get_t( Ray& ray )
 {
-    glm::vec3 dist = ray.origin - m_pos;
-
-    float A = glm::dot( ray.dir, ray.dir );
-    float B = glm::dot( ray.dir, dist ) * 2;
-    float C = glm::dot( dist, dist ) - ( m_radius * m_radius );
-
-    double roots[2];
-    size_t roots_num = quadraticRoots( A, B, C, roots );
-
-    if( roots_num == 0 )
-    {
-        //cout << "Zero roots" << endl;
-        return 0;
-    }
-    else if( roots[0] > 0.001 && roots[0] < roots[1] )
-    {
-        //cout << "Root[0]: " << roots[0] << endl;
-        return roots[0];
-    }
-    else if( roots[1] > 0.001 && roots[0] > roots[1] )
-    {
-        //cout << "Root[1]: " << roots[1] << endl;
-        return roots[1];
-    }
+    float t = 0.0;
+    bool intersect = glm::intersectRaySphere( ray.origin, ray.dir, m_pos, m_radius * m_radius, t );
+    if( intersect )
+        return t;
     else
-    {
-        //cout << "Default Case: " << roots[0] << " " << roots[1] << endl;
-        return 0;
-    }
+        return -1;
 }
 
 glm::vec3
