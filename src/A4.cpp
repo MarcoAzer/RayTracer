@@ -20,6 +20,7 @@ glm::vec3 Get_Pixel_Color( SceneNode* root,
                            const std::list<Light *> & lights, 
                            const glm::vec3 & ambient,
                            Ray& ray ){
+    static bool first = true;
 
     State pixel_state = background;
     glm::vec3 col;
@@ -31,23 +32,27 @@ glm::vec3 Get_Pixel_Color( SceneNode* root,
     {
         float new_t = child->get_t( ray );
 
-        if( new_t > 0 && new_t < t )
+        // Intersect with object
+        if( new_t > 0 )
         {
-            t = new_t;
-            obj_intersect = child;
+            // Object infront of another
+            if( new_t < t )
+            {
+                t = new_t;
+                obj_intersect = child;
+            }
         }
     }
 
-    if( t == INT_MAX )
-    {
-        pixel_state = background;
-    }
-    else
+    // Intersect with object
+    if( t != INT_MAX )
     {
         GeometryNode* g_node = (GeometryNode*)obj_intersect;
         PhongMaterial* phong = (PhongMaterial*)g_node->m_material;
+        // Point of intersection
         glm::vec3 p = ray.origin + t * ray.dir;
 
+        // Shadow Ray
         for( list<Light*>::const_iterator it = lights.begin(); it != lights.end(); it++ )
         {
             glm::vec3 light_dir = p - (*it)->position;
@@ -56,17 +61,17 @@ glm::vec3 Get_Pixel_Color( SceneNode* root,
             Ray light_ray( (*it)->position, light_dir );
             float light_t = root->nh_intersect( light_ray );
 
-            const float epsilon = 0.01;
+            const float epsilon = 0.05;
+
+            glm::vec3 p1 = (*it)->position + light_t * light_dir;
+            glm::vec3 diff = abs( p1 - p );
 
             glm::vec3 N = glm::normalize( g_node->m_primitive->normal( p ) );
-            p = p + epsilon * N;
+            //p = p + epsilon * N;
                  
             // Test light intersection
             // Object between object and light
-            if( light_t == 0 )
-            {
-            }
-            else if( abs( light_t - light_dist ) < epsilon /*|| g_node->m_primitive->epsilon_check( p )*/ ) 
+            if( diff.x < epsilon && diff.y < epsilon && diff.z < epsilon  ) 
             {
                 pixel_state = color;
 
@@ -96,6 +101,11 @@ glm::vec3 Get_Pixel_Color( SceneNode* root,
             }
             else
             {
+                if( first ){
+                    cout << endl;
+                    cout << diff << endl;
+                    first = false;
+                }
                 if( pixel_state != color )
                     pixel_state = shadow;
             }

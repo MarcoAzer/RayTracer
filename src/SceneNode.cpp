@@ -125,12 +125,9 @@ SceneNode::nh_intersect( Ray& ray )
     for( SceneNode* child : children )
     {
         float new_t = child->get_t( ray );
-        //cout << "New_T: " << new_t << endl;
-        if( new_t > 0.001 && new_t < t )
+        if( new_t > 0 && new_t < t )
             t = new_t;
     }
-    if( t == INT_MAX )
-        return 0;
 
     return t;
 }
